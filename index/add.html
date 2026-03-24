@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>タスク追加</title>
+</head>
+
+<body>
+    <h1>タスク追加</h1>
+    <a href="../index.html" class="button">戻る</a>
+
+    <input type="text" id="todo-input" placeholder="タスクを入力">
+    <input type="date" id="date-input">
+    <button id="add-button">保存</button>
+</body>
+
+<script>
+    const addButton = document.getElementById('add-button');
+    const todoInput = document.getElementById('todo-input');
+    const dateInput = document.getElementById('date-input');
+    const editIndex = localStorage.getItem("editIndex");
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    
+    if (editIndex !== null){
+        const task = tasks[editIndex];
+        todoInput.value = task.name;
+        dateInput.value = task.date;
+    }
+
+    addButton.addEventListener('click', () => {
+        const task = todoInput.value;
+        const date = dateInput.value;
+
+        if(!task || !date){ 
+            alert('タスクと日付を入力');
+            return;
+        }
+
+        if (editIndex !== null){
+            tasks[editIndex] = { name: task, date: date };
+            localStorage.removeItem("editIndex");
+        }
+        else{
+            tasks.push({name: task, date: date});
+        }
+
+        // タスクを日付順にソートして保存
+        tasks.sort((a, b) => { return new Date(a.date) - new Date(b.date); });
+
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        window.location.href = '../index.html';
+    });
+</script>
+</html>

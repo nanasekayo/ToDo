@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>To Do List</title>
+
+</head>
+<body>
+    <h1>To Do List</h1>
+    <a href="index/add.html" class="button">+</a>
+
+    <div id="todo-list"></div>
+</body>
+
+<script>
+    const todoList = document.getElementById('todo-list');
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    tasks.sort((a, b) => { return new Date(a.date) - new Date(b.date); });
+
+    function calcDaysLeft(date){
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // 時間をリセットして日付のみを比較
+
+        const targetDate = new Date(date);
+        targetDate.setHours(0, 0, 0, 0);
+
+        const diff = targetDate - today;
+
+        return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    }
+
+    function formatDate(dateString){
+        const date = new Date(dateString);
+
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+
+        return `${year}.${month}/${day}`;
+      }
+
+    if (tasks.length === 0){
+     const emptyMessage = document.createElement("p");
+     emptyMessage.innerHTML = "ぜーんぶおわり！<br>右上の「＋」からタスクを追加してね";
+     emptyMessage.classList.add("empty-message");
+     todoList.appendChild(emptyMessage);   
+    }
+    
+    else{
+        tasks.forEach((task, index) => {
+        const card = document.createElement('div');
+        const daysLeft = calcDaysLeft(task.date);
+        const formattedDate = formatDate(task.date);
+        card.classList.add('card');
+
+        let remainingText = '';
+        if(daysLeft < 0){
+            remainingText = `期限切れ`;
+        } else if(daysLeft === 0){
+            remainingText = `今日！！`;
+        } else {
+            remainingText = `あと${daysLeft}日`;
+        }
+
+        card.innerHTML = `
+            <h3>${task.name}</h3>
+            <p>${formattedDate}まで</p>
+            <p>${remainingText}</p>
+            <button class="edit-button">編集</button>
+            <button class="delete-button">完了</button>
+        `;
+
+        if(daysLeft < 0){
+            card.classList.add('expired');
+        } else if(daysLeft <= 1 ){
+            card.classList.add('urgent');
+        } else if(daysLeft <= 3){
+            card.classList.add('soon');
+        } else {
+            card.classList.add('normal');
+        }
+
+        card.querySelector(".edit-button").addEventListener("click", ()=>{
+            localStorage.setItem("editIndex", index);
+            window.location.href = "index/add.html";
+        })
+
+        card.querySelector(".delete-button").addEventListener('click', () => {
+            deleteTask(index);
+        });
+
+        todoList.appendChild(card);
+        });
+    }
+
+    // タスク削除関数
+    function deleteTask(index){
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+
+        tasks.splice(index, 1);
+
+        tasks.sort((a, b) => { return new Date(a.date) - new Date(b.date); });  //ソートして保存
+
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+
+        window.location.reload();
+    }
+</script>
+</html>

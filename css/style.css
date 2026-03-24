@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+h1{
+    margin-left: 20px;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+}
+
+.button{
+    display: inline-block;
+    padding: 10px 24px;
+    font-size: 30px;
+    background-color: #9cccff;
+    border-radius: 50%;
+    margin-bottom: 30px;
+    align-self: flex-end;
+}
+
+.button:active{
+    transform: scale(0.95);
+}
+
+a, a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+.card{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.normal{
+    background-color: #f9f9f9;
+}
+
+.soon{
+    background-color: #fff3cd;
+}
+
+.urgent{
+    background-color: #f8d7da;
+}
+
+.expired{
+    background-color: #d6d8db;
+}
+
+.empty-message{
+    margin-top: 40px;
+    text-align: center;
+}
+
+.edit-button, .delete-button{
+    font-size: 14px;
+    margin: 0 10px 0;
+}
